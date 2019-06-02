@@ -19,6 +19,7 @@ extension Book {
     @NSManaged public var ext: String!
     @NSManaged public var usesDefaultArtwork: Bool
     @NSManaged public var chapters: NSOrderedSet?
+    @NSManaged public var bookmarks: NSOrderedSet?
     @NSManaged public var playlist: Playlist?
     @NSManaged public var artworkColors: Theme!
     @NSManaged public var lastPlayed: Library?
@@ -56,4 +57,34 @@ extension Book {
 
     @objc(removeChapters:)
     @NSManaged public func removeFromChapters(_ values: NSOrderedSet)
+
+    @objc(insertObject:inBookmarksAtIndex:)
+    @NSManaged public func insertIntoBookmarks(_ value: Chapter, at idx: Int)
+
+    @objc(removeObjectFromBookmarksAtIndex:)
+    @NSManaged public func removeFromBookmarks(at idx: Int)
+
+    @objc(insertBookmarks:atIndexes:)
+    @NSManaged public func insertIntoBookmarks(_ values: [Chapter], at indexes: NSIndexSet)
+
+    @objc(removeBookmarksAtIndexes:)
+    @NSManaged public func removeFromBookmarks(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInBookmarksAtIndex:withObject:)
+    @NSManaged public func replaceBookmarks(at idx: Int, with value: Chapter)
+
+    @objc(replaceBookmarksAtIndexes:withBookmarks:)
+    @NSManaged public func replaceBookmarks(at indexes: NSIndexSet, with values: [Chapter])
+
+    @objc(addBookmarksObject:)
+    @NSManaged public func addToBookmarks(_ value: Chapter)
+
+    @objc(removeBookmarksObject:)
+    @NSManaged public func removeFromBookmarks(_ value: Chapter)
+
+    @objc(addBookmarks:)
+    @NSManaged public func addToBookmarks(_ values: NSOrderedSet)
+
+    @objc(removeBookmarks:)
+    @NSManaged public func removeFromBookmarks(_ values: NSOrderedSet)
 }

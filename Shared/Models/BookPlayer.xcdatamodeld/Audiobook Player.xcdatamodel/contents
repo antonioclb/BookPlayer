@@ -5,9 +5,16 @@
         <attribute name="ext" attributeType="String" syncable="YES"/>
         <attribute name="usesDefaultArtwork" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="artworkColors" maxCount="1" deletionRule="Nullify" destinationEntity="Theme" inverseName="book" inverseEntity="Theme" syncable="YES"/>
+        <relationship name="bookmarks" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Bookmark" inverseName="book" inverseEntity="Bookmark" syncable="YES"/>
         <relationship name="chapters" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Chapter" inverseName="book" inverseEntity="Chapter" syncable="YES"/>
         <relationship name="lastPlayed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Library" inverseName="lastPlayedBook" inverseEntity="Library" syncable="YES"/>
         <relationship name="playlist" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Playlist" inverseName="books" inverseEntity="Playlist" syncable="YES"/>
+    </entity>
+    <entity name="Bookmark" representedClassName="Bookmark" syncable="YES">
+        <attribute name="notes" attributeType="String" syncable="YES"/>
+        <attribute name="position" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="title" attributeType="String" syncable="YES"/>
+        <relationship name="book" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Book" inverseName="bookmarks" inverseEntity="Book" syncable="YES"/>
     </entity>
     <entity name="Chapter" representedClassName="Chapter" syncable="YES">
         <attribute name="duration" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
@@ -58,7 +65,8 @@
         <relationship name="selected" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Library" inverseName="currentTheme" inverseEntity="Library" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Book" positionX="-65" positionY="329" width="128" height="150"/>
+        <element name="Book" positionX="-65" positionY="329" width="128" height="165"/>
+        <element name="Bookmark" positionX="-54" positionY="135" width="128" height="105"/>
         <element name="Chapter" positionX="162" positionY="99" width="128" height="120"/>
         <element name="Library" positionX="160" positionY="9" width="128" height="105"/>
         <element name="LibraryItem" positionX="-63" positionY="-18" width="128" height="210"/>
