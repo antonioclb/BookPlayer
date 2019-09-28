@@ -59,28 +59,28 @@ extension Book {
     @NSManaged public func removeFromChapters(_ values: NSOrderedSet)
 
     @objc(insertObject:inBookmarksAtIndex:)
-    @NSManaged public func insertIntoBookmarks(_ value: Chapter, at idx: Int)
+    @NSManaged public func insertIntoBookmarks(_ value: Bookmark, at idx: Int)
 
     @objc(removeObjectFromBookmarksAtIndex:)
     @NSManaged public func removeFromBookmarks(at idx: Int)
 
     @objc(insertBookmarks:atIndexes:)
-    @NSManaged public func insertIntoBookmarks(_ values: [Chapter], at indexes: NSIndexSet)
+    @NSManaged public func insertIntoBookmarks(_ values: [Bookmark], at indexes: NSIndexSet)
 
     @objc(removeBookmarksAtIndexes:)
     @NSManaged public func removeFromBookmarks(at indexes: NSIndexSet)
 
     @objc(replaceObjectInBookmarksAtIndex:withObject:)
-    @NSManaged public func replaceBookmarks(at idx: Int, with value: Chapter)
+    @NSManaged public func replaceBookmarks(at idx: Int, with value: Bookmark)
 
     @objc(replaceBookmarksAtIndexes:withBookmarks:)
-    @NSManaged public func replaceBookmarks(at indexes: NSIndexSet, with values: [Chapter])
+    @NSManaged public func replaceBookmarks(at indexes: NSIndexSet, with values: [Bookmark])
 
     @objc(addBookmarksObject:)
-    @NSManaged public func addToBookmarks(_ value: Chapter)
+    @NSManaged public func addToBookmarks(_ value: Bookmark)
 
     @objc(removeBookmarksObject:)
-    @NSManaged public func removeFromBookmarks(_ value: Chapter)
+    @NSManaged public func removeFromBookmarks(_ value: Bookmark)
 
     @objc(addBookmarks:)
     @NSManaged public func addToBookmarks(_ values: NSOrderedSet)

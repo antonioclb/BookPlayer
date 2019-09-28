@@ -199,6 +199,7 @@
 		41FCDEA522A390F300198308 /* Bookmark+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FCDE9622A38A7500198308 /* Bookmark+CoreDataClass.swift */; };
 		41FCDEA722A39BFD00198308 /* Bookmark+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FCDE9622A38A7500198308 /* Bookmark+CoreDataClass.swift */; };
 		41FCDEA822A39C0000198308 /* Bookmark+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FCDE9522A38A7500198308 /* Bookmark+CoreDataProperties.swift */; };
+		41FCDEAA22A4C8AD00198308 /* BookmarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FCDEA922A4C8AD00198308 /* BookmarksViewController.swift */; };
 		6906A55021720FDF00A9E0B2 /* BookSortServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6906A54F21720FDF00A9E0B2 /* BookSortServiceTest.swift */; };
 		6906A553217211C600A9E0B2 /* StubFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6906A552217211C600A9E0B2 /* StubFactory.swift */; };
 		69343D332133844D000C425E /* VoiceOverService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69343D322133844D000C425E /* VoiceOverService.swift */; };
@@ -516,6 +517,7 @@
 		41F898AE2402080C00F58B8A /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = Carthage/Build/iOS/ZipArchive.framework; sourceTree = "<group>"; };
 		41FCDE9522A38A7500198308 /* Bookmark+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bookmark+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		41FCDE9622A38A7500198308 /* Bookmark+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bookmark+CoreDataClass.swift"; sourceTree = "<group>"; };
+		41FCDEA922A4C8AD00198308 /* BookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksViewController.swift; sourceTree = "<group>"; };
 		6906A54F21720FDF00A9E0B2 /* BookSortServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookSortServiceTest.swift; sourceTree = "<group>"; };
 		6906A552217211C600A9E0B2 /* StubFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubFactory.swift; sourceTree = "<group>"; };
 		69225C4E2159C2650004739E /* BookSortService+SortError+PlayListSortOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookSortService+SortError+PlayListSortOrder.swift"; sourceTree = "<group>"; };
@@ -1082,6 +1084,7 @@
 				418B6D5C1D2CB76900F974FB /* PlayerViewController.swift */,
 				C3EC372D206EE0650094B4E8 /* SleepTimer.swift */,
 				41B2AC8D1D43CCE8005382A9 /* ChaptersViewController.swift */,
+				41FCDEA922A4C8AD00198308 /* BookmarksViewController.swift */,
 				C3D3852820C1EA7A00A0ACC7 /* Views */,
 				C30EEEB92079645C00A4ED33 /* Containers */,
 			);
@@ -1652,6 +1655,7 @@
 				4142964921F2E2BA004356DA /* ThemeCellView.swift in Sources */,
 				4160A0A123F304530039166B /* LocalizableLabel.swift in Sources */,
 				41A1B139226FEDAD00EA0400 /* Chapter+AVFoundation.swift in Sources */,
+				41FCDEAA22A4C8AD00198308 /* BookmarksViewController.swift in Sources */,
 				C318D3AD208CF624000666F8 /* PlayerJumpIcon.swift in Sources */,
 				C37A6875209F13120063AEAC /* CreditsViewController.swift in Sources */,
 				4197240021874D5F00AB1190 /* UserActivityManager.swift in Sources */,

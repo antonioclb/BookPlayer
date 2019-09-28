@@ -123,6 +123,19 @@ public class DataManager {
         return playlist.getBook(with: identifier)
     }
 
+    public class func createBookmark(at position: Double, title: String, notes: String) -> Bookmark {
+        return Bookmark(at: position, title: title, notes: notes, context: self.persistentContainer.viewContext)
+    }
+
+    public class func insert(_ bookmark: Bookmark, into book: Book, at index: Int? = nil) {
+        if let index = index {
+            book.insertIntoBookmarks(bookmark, at: index)
+        } else {
+            book.addToBookmarks(bookmark)
+        }
+        self.saveContext()
+    }
+
     public class func createPlaylist(title: String, books: [Book]) -> Playlist {
         return Playlist(title: title, books: books, context: self.persistentContainer.viewContext)
     }

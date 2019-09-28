@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -31,6 +31,16 @@
                                 <state key="normal" image="maskPlayerClose"/>
                                 <connections>
                                     <action selector="dismissPlayer" destination="Sd0-Pz-hUD" eventType="touchUpInside" id="P15-dd-Fzr"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yet-OU-I5d">
+                                <rect key="frame" x="315" y="44" width="35" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="35" id="O8E-Nz-AsZ"/>
+                                </constraints>
+                                <state key="normal" title="Add"/>
+                                <connections>
+                                    <action selector="setNewBookmark" destination="Sd0-Pz-hUD" eventType="touchUpInside" id="0lj-aE-gbh"/>
                                 </connections>
                             </button>
                             <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yd3-5B-2dw" userLabel="A Spacer">
@@ -85,6 +95,11 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="M8S-cO-boc"/>
+                                    <barButtonItem title="B" id="L8X-Rb-xYi">
+                                        <connections>
+                                            <segue destination="YzG-N4-bS7" kind="show" id="ajq-Qb-fZ5"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem title="More" image="toolbarIconMore" largeContentSizeImage="toolbarIconMore" id="Fsd-fw-HAo">
                                         <connections>
                                             <action selector="showMore" destination="Sd0-Pz-hUD" id="Ddo-nq-AC9"/>
@@ -111,6 +126,7 @@
                             <constraint firstItem="yd3-5B-2dw" firstAttribute="height" secondItem="Udu-jl-e5s" secondAttribute="height" multiplier="0.7" constant="-10" id="5MG-Cq-rM8"/>
                             <constraint firstItem="yd3-5B-2dw" firstAttribute="leading" secondItem="Eaz-on-oHM" secondAttribute="leading" id="6kU-pb-3Mr"/>
                             <constraint firstItem="Eaz-on-oHM" firstAttribute="trailing" secondItem="yd3-5B-2dw" secondAttribute="trailing" id="6tA-Bb-XiX"/>
+                            <constraint firstItem="yd3-5B-2dw" firstAttribute="top" secondItem="yet-OU-I5d" secondAttribute="bottom" id="8Dx-Ik-tVv"/>
                             <constraint firstItem="AqX-H1-RbL" firstAttribute="leading" secondItem="Eaz-on-oHM" secondAttribute="leading" constant="10" id="FE0-9R-a5e"/>
                             <constraint firstItem="UQ3-tH-RXC" firstAttribute="top" secondItem="Eaz-on-oHM" secondAttribute="top" id="FSk-a6-cK0"/>
                             <constraint firstItem="xRJ-B7-BuP" firstAttribute="top" secondItem="9Od-bi-f9L" secondAttribute="bottom" id="J35-4R-Xxx"/>
@@ -122,6 +138,7 @@
                             <constraint firstAttribute="top" secondItem="5MM-Os-mI8" secondAttribute="top" id="QjV-Nj-lXZ"/>
                             <constraint firstItem="9Od-bi-f9L" firstAttribute="top" secondItem="yd3-5B-2dw" secondAttribute="bottom" id="RT3-VJ-2Ug"/>
                             <constraint firstItem="5MM-Os-mI8" firstAttribute="bottom" secondItem="Z0B-Hs-BTD" secondAttribute="bottom" id="S0r-ew-276"/>
+                            <constraint firstItem="yet-OU-I5d" firstAttribute="top" secondItem="Eaz-on-oHM" secondAttribute="top" id="SRf-wT-ZvL"/>
                             <constraint firstItem="Eaz-on-oHM" firstAttribute="trailing" secondItem="9Od-bi-f9L" secondAttribute="trailing" id="SlH-px-x3W"/>
                             <constraint firstItem="Udu-jl-e5s" firstAttribute="top" secondItem="XWJ-W6-gno" secondAttribute="bottom" id="VcK-or-h0k"/>
                             <constraint firstItem="Eaz-on-oHM" firstAttribute="trailing" secondItem="UQ3-tH-RXC" secondAttribute="trailing" id="cKn-5O-M14"/>
@@ -129,6 +146,7 @@
                             <constraint firstItem="5MM-Os-mI8" firstAttribute="leading" secondItem="Z0B-Hs-BTD" secondAttribute="leading" id="gWj-u8-obH"/>
                             <constraint firstItem="Eaz-on-oHM" firstAttribute="trailing" secondItem="AqX-H1-RbL" secondAttribute="trailing" constant="10" id="h7J-oQ-vwD"/>
                             <constraint firstItem="AqX-H1-RbL" firstAttribute="top" secondItem="Udu-jl-e5s" secondAttribute="bottom" id="hUe-y3-rWk"/>
+                            <constraint firstItem="Eaz-on-oHM" firstAttribute="trailing" secondItem="yet-OU-I5d" secondAttribute="trailing" constant="25" id="hfY-8G-qWE"/>
                             <constraint firstItem="Eaz-on-oHM" firstAttribute="trailing" secondItem="XWJ-W6-gno" secondAttribute="trailing" id="mmc-8v-eOQ"/>
                             <constraint firstItem="xRJ-B7-BuP" firstAttribute="width" secondItem="Z0B-Hs-BTD" secondAttribute="width" id="pUK-xN-QoJ"/>
                             <constraint firstItem="Eaz-on-oHM" firstAttribute="bottom" secondItem="AqX-H1-RbL" secondAttribute="bottom" id="roH-yf-vpl"/>
@@ -143,6 +161,7 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="backgroundImage" destination="5MM-Os-mI8" id="wRs-BL-SOq"/>
+                        <outlet property="bookmarksButton" destination="L8X-Rb-xYi" id="YOS-ET-NzN"/>
                         <outlet property="bottomToolbar" destination="AqX-H1-RbL" id="sIO-Yb-tls"/>
                         <outlet property="chaptersButton" destination="NBy-Nn-5LY" id="ySc-5s-lez"/>
                         <outlet property="closeButton" destination="UQ3-tH-RXC" id="V9f-G1-nX8"/>
@@ -206,7 +225,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FeB-kU-g2P" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2380" y="845"/>
+            <point key="canvasLocation" x="1598" y="1538"/>
         </scene>
         <!--App Navigation Controller-->
         <scene sceneID="8hE-1K-H9j">
@@ -382,6 +401,73 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FBv-An-2hg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2382" y="192"/>
+        </scene>
+        <!--Bookmarks-->
+        <scene sceneID="nLV-os-KAv">
+            <objects>
+                <tableViewController id="13J-OT-z62" customClass="BookmarksViewController" customModule="BookPlayer" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="12a-mi-ODE">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="BookmarkCell" textLabel="aO7-u7-zlI" detailTextLabel="sSe-ng-GT6" style="IBUITableViewCellStyleSubtitle" id="GDg-tZ-eJW">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="GDg-tZ-eJW" id="ZoE-Hb-Ota">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666666666666664"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aO7-u7-zlI">
+                                            <rect key="frame" x="16.000000000000004" y="5" width="33.333333333333336" height="20.333333333333332"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="sSe-ng-GT6">
+                                            <rect key="frame" x="15.999999999999996" y="25.333333333333332" width="43.666666666666664" height="14.333333333333334"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="13J-OT-z62" id="REs-7S-Q82"/>
+                            <outlet property="delegate" destination="13J-OT-z62" id="LS9-6p-guz"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Bookmarks" id="Tcj-ro-AEr">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="lMR-mr-sJg">
+                            <connections>
+                                <action selector="done:" destination="13J-OT-z62" id="tBC-tP-oQS"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="s28-Ot-78f" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3212" y="845"/>
+        </scene>
+        <!--App Navigation Controller-->
+        <scene sceneID="0v2-8S-jQf">
+            <objects>
+                <navigationController id="YzG-N4-bS7" customClass="AppNavigationController" customModule="BookPlayer" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Qad-w8-peC">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="13J-OT-z62" kind="relationship" relationship="rootViewController" id="YYD-md-kRI"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Sr9-Gp-h1v" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2383" y="844"/>
         </scene>
     </scenes>
     <resources>

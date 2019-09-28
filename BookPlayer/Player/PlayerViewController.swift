@@ -24,6 +24,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet private weak var sleepButton: UIBarButtonItem!
     @IBOutlet private var sleepLabel: UIBarButtonItem!
     @IBOutlet private var chaptersButton: UIBarButtonItem!
+    @IBOutlet private weak var bookmarksButton: UIBarButtonItem!
     @IBOutlet private weak var moreButton: UIBarButtonItem!
     @IBOutlet private weak var backgroundImage: UIImageView!
 
@@ -52,8 +53,16 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
             self.metaViewController = viewController
         }
 
-        if let navigationController = segue.destination as? UINavigationController,
-            let viewController = navigationController.viewControllers.first as? ChaptersViewController,
+        guard let navigationController = segue.destination as? UINavigationController else { return }
+
+        if let viewController = navigationController.viewControllers.first as? BookmarksViewController {
+            viewController.bookmarks = self.currentBook.bookmarks?.array as? [Bookmark]
+            viewController.didSelectBookmark = { selectedBookmark in
+                PlayerManager.shared.jumpTo(selectedBookmark.position)
+            }
+        }
+
+        if let viewController = navigationController.viewControllers.first as? ChaptersViewController,
             let currentChapter = self.currentBook.currentChapter {
             viewController.chapters = self.currentBook.chapters?.array as? [Chapter]
             viewController.currentChapter = currentChapter
@@ -187,6 +196,8 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
             items.append(avRoutePickerBarButtonItem)
         }
 
+        items.append(spacer)
+        items.append(self.bookmarksButton)
         items.append(spacer)
         items.append(self.moreButton)
 
@@ -349,6 +360,32 @@ extension PlayerViewController {
     }
 
     // MARK: - Toolbar actions
+
+    @IBAction func setNewBookmark() {
+        guard PlayerManager.shared.hasLoadedBook else {
+            return
+        }
+
+        let formattedTime = self.formatTime(self.currentBook.currentTime)
+
+        let alert = UIAlertController(title: "New Bookmark",
+                                      message: "Add a note for the new bookmark at: \(formattedTime)",
+                                      preferredStyle: .alert)
+
+        alert.addTextField(configurationHandler: { textfield in
+            textfield.text = ""
+        })
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { _ in
+            let notes = alert.textFields!.first!.text!
+
+            let bookmark = DataManager.createBookmark(at: self.currentBook.currentTime, title: formattedTime, notes: notes)
+            DataManager.insert(bookmark, into: self.currentBook)
+        }))
+
+        self.present(alert, animated: true, completion: nil)
+    }
 
     @IBAction func setSpeed() {
         let actionSheet = UIAlertController(title: nil, message: "player_speed_title".localized, preferredStyle: .actionSheet)
