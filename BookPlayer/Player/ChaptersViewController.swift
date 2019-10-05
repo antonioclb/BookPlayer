@@ -12,10 +12,12 @@ import Themeable
 import UIKit
 
 class ChaptersViewController: UITableViewController {
-    var chapters: [Chapter]!
+    var currentBook: Book!
+    var chapters: [Chapter] {
+        return self.currentBook.chapters?.array as? [Chapter] ?? []
+    }
 
-    var currentChapter: Chapter!
-    var didSelectChapter: ((_ selectedChapter: Chapter) -> Void)?
+    var didSelectChapter: ((_ selectedChapter: Chapter?) -> Void)?
     var scrolledToCurrentChapter = false
 
     override func viewDidLoad() {
@@ -32,15 +34,27 @@ class ChaptersViewController: UITableViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        guard !self.scrolledToCurrentChapter, let index = self.chapters.firstIndex(of: self.currentChapter) else { return }
+        guard let currentChapter = self.currentBook.currentChapter,
+            !self.scrolledToCurrentChapter,
+            let index = self.chapters.firstIndex(of: currentChapter) else { return }
 
         self.scrolledToCurrentChapter = true
         let indexPath = IndexPath(row: index, section: 0)
         self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.tableView.reloadData()
+    }
+
     @IBAction func done(_ sender: UIBarButtonItem?) {
-        self.dismiss(animated: true, completion: nil)
+        self.didSelectChapter?(nil)
+    }
+
+    public func setNewBook(_ book: Book) {
+        self.currentBook = book
+        self.tableView.reloadData()
     }
 
     // MARK: - Table view data source
@@ -64,7 +78,7 @@ class ChaptersViewController: UITableViewController {
         cell.detailTextLabel?.text = String.localizedStringWithFormat("chapters_item_description".localized, self.formatTime(chapter.start), self.formatTime(chapter.duration))
         cell.accessoryType = .none
 
-        if self.currentChapter.index == chapter.index {
+        if let currentChapter = self.currentBook.currentChapter, currentChapter.index == chapter.index {
             cell.accessoryType = .checkmark
         }
 
@@ -73,8 +87,6 @@ class ChaptersViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.didSelectChapter?(self.chapters[indexPath.row])
-
-        self.done(nil)
     }
 }
 

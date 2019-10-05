@@ -82,6 +82,7 @@
 		416AAC3323F51031005AD04F /* LocalizableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 416AAC3223F51031005AD04F /* LocalizableButton.swift */; };
 		416AAC3423F515AF005AD04F /* String+BookPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4160A08E23F2DBD40039166B /* String+BookPlayer.swift */; };
 		416AAC3523F515B0005AD04F /* String+BookPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4160A08E23F2DBD40039166B /* String+BookPlayer.swift */; };
+		416C75EE2346FD0C00D2ED01 /* ContainerPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 416C75ED2346FD0C00D2ED01 /* ContainerPageViewController.swift */; };
 		4175E14522080C7700FB7B71 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4175E14422080C7700FB7B71 /* StoreKit.framework */; };
 		41893AC82272CBD900576AE4 /* LibraryInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41893AC72272CBD900576AE4 /* LibraryInterfaceController.swift */; };
 		418B6CFC1D2707F800F974FB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418B6CFB1D2707F800F974FB /* AppDelegate.swift */; };
@@ -436,6 +437,7 @@
 		4172CB6C2495C09300AD4A55 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = uk; path = uk.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		4172CB6D2495C09300AD4A55 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4172CB6E2495C09300AD4A55 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		416C75ED2346FD0C00D2ED01 /* ContainerPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContainerPageViewController.swift; path = Containers/ContainerPageViewController.swift; sourceTree = "<group>"; };
 		4175E1232206CF9600FB7B71 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		4175E14422080C7700FB7B71 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		41893AC72272CBD900576AE4 /* LibraryInterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryInterfaceController.swift; sourceTree = "<group>"; };
@@ -1157,6 +1159,7 @@
 		C3EC372A206EDB9A0094B4E8 /* Player */ = {
 			isa = PBXGroup;
 			children = (
+				416C75ED2346FD0C00D2ED01 /* ContainerPageViewController.swift */,
 				410D0FF01EDF659900A52EB9 /* PlayerManager.swift */,
 				418B6D5C1D2CB76900F974FB /* PlayerViewController.swift */,
 				C3EC372D206EE0650094B4E8 /* SleepTimer.swift */,
@@ -1786,6 +1789,7 @@
 				4197240021874D5F00AB1190 /* UserActivityManager.swift in Sources */,
 				41D4F2EF21053944009F1B1E /* IndexPath+BookPlayer.swift in Sources */,
 				418B6D5D1D2CB76900F974FB /* PlayerViewController.swift in Sources */,
+				416C75EE2346FD0C00D2ED01 /* ContainerPageViewController.swift in Sources */,
 				69343D332133844D000C425E /* VoiceOverService.swift in Sources */,
 				C359C30720A9F35B00A626E3 /* SkipDurationViewController.swift in Sources */,
 				41A1B133226FE34F00EA0400 /* Constants.swift in Sources */,

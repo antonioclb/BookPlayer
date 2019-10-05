@@ -185,11 +185,11 @@ class ItemListViewController: UIViewController, ItemList, ItemListAlerts, ItemLi
     func showPlayerView(book: Book) {
         let storyboard = UIStoryboard(name: "Player", bundle: nil)
 
-        if let playerVC = storyboard.instantiateViewController(withIdentifier: "PlayerViewController") as? PlayerViewController {
-            playerVC.currentBook = book
+        guard let pageVC = storyboard.instantiateViewController(withIdentifier: "ContainerPageViewController") as? ContainerPageViewController else { return }
 
-            self.present(playerVC, animated: true)
-        }
+        pageVC.currentBook = book
+
+        self.present(pageVC, animated: true)
     }
 
     func setupPlayer(book: Book, _ override: Bool = false) {

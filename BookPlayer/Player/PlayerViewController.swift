@@ -14,8 +14,6 @@ import StoreKit
 import Themeable
 import UIKit
 
-// swiftlint:disable file_length
-
 class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet private weak var closeButton: UIButton!
     @IBOutlet private weak var closeButtonTop: NSLayoutConstraint!
@@ -25,7 +23,8 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet private var sleepLabel: UIBarButtonItem!
     @IBOutlet private var chaptersButton: UIBarButtonItem!
     @IBOutlet private weak var moreButton: UIBarButtonItem!
-    @IBOutlet private weak var backgroundImage: UIImageView!
+
+    var didPressChapters: (() -> Void)!
 
     var currentBook: Book!
     private let timerIcon: UIImage = UIImage(named: "toolbarIconTimer")!
@@ -50,18 +49,6 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
 
         if let viewController = segue.destination as? PlayerMetaViewController {
             self.metaViewController = viewController
-        }
-
-        if let navigationController = segue.destination as? UINavigationController,
-            let viewController = navigationController.viewControllers.first as? ChaptersViewController,
-            let currentChapter = self.currentBook.currentChapter {
-            viewController.chapters = self.currentBook.chapters?.array as? [Chapter]
-            viewController.currentChapter = currentChapter
-            viewController.didSelectChapter = { selectedChapter in
-                // Don't set the chapter, set the new time which will set the chapter in didSet
-                // Add a fraction of a second to make sure we start after the end of the previous chapter
-                PlayerManager.shared.jumpTo(selectedChapter.start + 0.01)
-            }
         }
     }
 
@@ -96,12 +83,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         // Observers
         NotificationCenter.default.addObserver(self, selector: #selector(self.requestReview), name: .requestReview, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.requestReview), name: .bookEnd, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.bookChange(_:)), name: .bookChange, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.timerStart), name: .timerStart, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.timerProgress(_:)), name: .timerProgress, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.timerEnd), name: .timerEnd, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.timerSelected(_:)), name: .timerSelected, object: nil)
-
+        
         if SleepTimer.shared.isActive() {
             self.updateToolbar(true, animated: true)
         }
@@ -141,6 +123,11 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         UIDevice.current.isBatteryMonitoringEnabled = false
     }
 
+    public func setNewBook(_ book: Book) {
+        self.currentBook = book
+        self.setupView(book: book)
+    }
+
     func setupView(book currentBook: Book) {
         self.metaViewController?.book = currentBook
         self.controlsViewController?.book = currentBook
@@ -149,14 +136,6 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         self.speedButton.accessibilityLabel = String(describing: self.formatSpeed(PlayerManager.shared.speed) + " \("speed_title".localized)")
 
         self.updateToolbar()
-
-        if currentBook.usesDefaultArtwork {
-            self.backgroundImage.isHidden = true
-
-            return
-        }
-
-        self.backgroundImage.image = currentBook.artwork
 
         // Solution thanks to https://forums.developer.apple.com/thread/63166#180445
         self.modalPresentationCapturesStatusBarAppearance = true
@@ -167,11 +146,16 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     func updateToolbar(_ showTimerLabel: Bool = false, animated: Bool = false) {
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 
-        var items: [UIBarButtonItem] = [
-            self.speedButton,
-            spacer,
-            self.sleepButton
-        ]
+        var items = [UIBarButtonItem]()
+
+        self.chaptersButton.isEnabled = self.currentBook.hasChapters
+        items.append(self.chaptersButton)
+        items.append(spacer)
+        items.append(self.speedButton)
+        items.append(spacer)
+        items.append(self.moreButton)
+        items.append(spacer)
+        items.append(self.sleepButton)
 
         if showTimerLabel {
             items.append(self.sleepLabel)
@@ -189,9 +173,6 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
             items.append(spacer)
             items.append(avRoutePickerBarButtonItem)
         }
-
-        items.append(spacer)
-        items.append(self.moreButton)
 
         self.bottomToolbar.setItems(items, animated: animated)
     }
@@ -217,57 +198,6 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
 
             UserDefaults.standard.set(false, forKey: "ask_review")
         }
-    }
-
-    @objc func bookChange(_ notification: Notification) {
-        guard
-            let userInfo = notification.userInfo,
-            let book = userInfo["book"] as? Book
-        else {
-            return
-        }
-
-        self.currentBook = book
-
-        self.setupView(book: book)
-    }
-
-    @objc func timerSelected(_ notification: Notification) {
-        guard
-            let userInfo = notification.userInfo,
-            let timeLeft = userInfo["timeLeft"] as? Double
-        else {
-            return
-        }
-
-        if timeLeft == -2 {
-            self.updateToolbar(true, animated: true)
-            self.sleepLabel.title = "active_title".localized
-        }
-    }
-
-    @objc func timerStart() {
-        self.updateToolbar(true, animated: true)
-    }
-
-    @objc func timerProgress(_ notification: Notification) {
-        guard
-            let userInfo = notification.userInfo,
-            let timeLeft = userInfo["timeLeft"] as? Double
-        else {
-            return
-        }
-
-        self.sleepLabel.title = SleepTimer.shared.durationFormatter.string(from: timeLeft)
-        if let timeLeft = SleepTimer.shared.durationFormatter.string(from: timeLeft) {
-            let remainingTitle = String(describing: String.localizedStringWithFormat("sleep_remaining_title".localized, timeLeft))
-            self.sleepLabel.accessibilityLabel = String(describing: remainingTitle)
-        }
-    }
-
-    @objc func timerEnd() {
-        self.sleepLabel.title = ""
-        self.updateToolbar(false, animated: true)
     }
 
     // MARK: - Gesture recognizers
@@ -361,8 +291,6 @@ extension PlayerViewController {
 
     @IBAction func dismissPlayer() {
         self.dismiss(animated: true, completion: nil)
-
-        NotificationCenter.default.post(name: .playerDismissed, object: nil, userInfo: nil)
     }
 
     // MARK: - Toolbar actions
@@ -415,6 +343,14 @@ extension PlayerViewController {
 
         self.present(actionSheet, animated: true, completion: nil)
     }
+
+    @IBAction func showChapters() {
+        guard PlayerManager.shared.hasLoadedBook else {
+            return
+        }
+
+        self.didPressChapters()
+    }
 }
 
 extension PlayerViewController: Themeable {
@@ -428,10 +364,6 @@ extension PlayerViewController: Themeable {
         self.bottomToolbar.tintColor = theme.highlightColor
         self.closeButton.tintColor = theme.highlightColor
 
-        // Apply the blurred view in relation to the brightness and luminance of the background color.
-        // This makes darker backgrounds stay interesting
-        self.backgroundImage.alpha = 0.1 + min((1 - theme.backgroundColor.luminance) * (1 - theme.backgroundColor.brightness), 0.7)
-
         self.blurEffectView?.removeFromSuperview()
 
         let blur = UIBlurEffect(style: theme.useDarkVariant ? UIBlurEffect.Style.dark : UIBlurEffect.Style.light)
@@ -440,6 +372,5 @@ extension PlayerViewController: Themeable {
         blurView.frame = self.view.bounds
 
         self.blurEffectView = blurView
-        self.backgroundImage.addSubview(blurView)
     }
 }
