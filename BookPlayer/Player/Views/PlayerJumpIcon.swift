@@ -12,6 +12,8 @@ class PlayerJumpIcon: UIView {
     fileprivate var backgroundImageView: UIImageView!
     fileprivate var label: UILabel!
 
+    var onTap: (() -> Void)?
+
     var backgroundImage: UIImage = UIImage()
 
     var title: String = "" {
@@ -51,24 +53,49 @@ class PlayerJumpIcon: UIView {
         self.label.font = UIFont.systemFont(ofSize: 14.0, weight: .bold)
         self.label.textAlignment = .center
         self.label.textColor = self.tintColor
-
-        self.label.layer.shadowOpacity = 0.8
-        self.label.layer.shadowOffset = CGSize(width: 0, height: 0)
-
+        self.label.accessibilityTraits = .button
         self.addSubview(self.backgroundImageView)
         self.addSubview(self.label)
+
+        let controlTap = UILongPressGestureRecognizer(target: self, action: #selector(self.tapControl))
+        controlTap.minimumPressDuration = 0
+
+        self.addGestureRecognizer(controlTap)
     }
 
     override func layoutSubviews() {
         self.label.frame = self.bounds.insetBy(dx: 10.0, dy: 10.0)
         self.backgroundImageView.center = self.label.center
     }
+
+    @objc private func tapControl(gestureRecognizer: UILongPressGestureRecognizer) {
+        guard gestureRecognizer.state == .began
+            || gestureRecognizer.state == .ended else {
+            return
+        }
+
+        guard gestureRecognizer.state == .ended else {
+            UIView.animate(withDuration: 0.25, delay: 0, options: [.beginFromCurrentState, .allowUserInteraction], animations: {
+                self.alpha = 0.5
+            }, completion: { _ in
+                self.onTap?()
+
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            })
+
+            return
+        }
+
+        UIView.animate(withDuration: 0.25, delay: 0, options: [.beginFromCurrentState, .allowUserInteraction], animations: {
+            self.alpha = 1
+        }, completion: nil)
+    }
 }
 
 class PlayerJumpIconForward: PlayerJumpIcon {
     override var backgroundImage: UIImage {
         get {
-            return #imageLiteral(resourceName: "playerIconForward")
+            return #imageLiteral(resourceName: "icon_player_jump_forward")
         }
         set {
             super.backgroundImage = newValue
@@ -78,17 +105,15 @@ class PlayerJumpIconForward: PlayerJumpIcon {
     override func setup() {
         super.setup()
 
-        self.backgroundImageView.addLayerMask("playerIconShadow", backgroundColor: .playerControlsShadowColor, opacity: 0.5)
-        self.backgroundImageView.addLayerMask("playerIconForwardArrowShadow", backgroundColor: .black)
-        self.backgroundImageView.addLayerMask("playerIconForward", backgroundColor: .white)
-        self.title = "+\(Int(PlayerManager.shared.forwardInterval.rounded()))s"
+        self.title = "+\(Int(PlayerManager.shared.forwardInterval.rounded()))"
+        self.label.accessibilityLabel = VoiceOverService.fastForwardText()
     }
 }
 
 class PlayerJumpIconRewind: PlayerJumpIcon {
     override var backgroundImage: UIImage {
         get {
-            return #imageLiteral(resourceName: "playerIconRewind")
+            return #imageLiteral(resourceName: "icon_player_jump_rewind")
         }
         set {
             super.backgroundImage = newValue
@@ -98,9 +123,7 @@ class PlayerJumpIconRewind: PlayerJumpIcon {
     override func setup() {
         super.setup()
 
-        self.backgroundImageView.addLayerMask("playerIconShadow", backgroundColor: .playerControlsShadowColor, opacity: 0.5)
-        self.backgroundImageView.addLayerMask("playerIconRewindArrowShadow", backgroundColor: .black)
-        self.backgroundImageView.addLayerMask("playerIconRewind", backgroundColor: .white)
-        self.title = "−\(Int(PlayerManager.shared.rewindInterval.rounded()))s"
+        self.title = "−\(Int(PlayerManager.shared.rewindInterval.rounded()))"
+        self.label.accessibilityLabel = VoiceOverService.rewindText()
     }
 }

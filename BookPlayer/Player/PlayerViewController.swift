@@ -14,7 +14,13 @@ import StoreKit
 import Themeable
 import UIKit
 
+// swiftlint:disable file_length
+
 class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
+    @IBOutlet private weak var artworkControl: ArtworkControl!
+    @IBOutlet weak var rewindControlView: PlayerJumpIconRewind!
+    @IBOutlet weak var forwardControlView: PlayerJumpIconForward!
+    @IBOutlet weak var playButton: UIButton!
     @IBOutlet private weak var closeButton: UIButton!
     @IBOutlet private weak var closeButtonTop: NSLayoutConstraint!
     @IBOutlet private weak var bottomToolbar: UIToolbar!
@@ -23,15 +29,18 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet private var sleepLabel: UIBarButtonItem!
     @IBOutlet private var chaptersButton: UIBarButtonItem!
     @IBOutlet private weak var moreButton: UIBarButtonItem!
+    @IBOutlet weak var pageControl: UIPageControl!
 
     var didPressChapters: (() -> Void)!
 
     var currentBook: Book!
+
+    private let playImage = UIImage(named: "icon_player_play")
+    private let pauseImage = UIImage(named: "icon_player_pause")
     private let timerIcon: UIImage = UIImage(named: "toolbarIconTimer")!
     private var pan: UIPanGestureRecognizer!
 
-    private weak var controlsViewController: PlayerControlsViewController?
-    private weak var metaViewController: PlayerMetaViewController?
+    private weak var controlsViewController: PlayerSliderControlsViewController?
 
     let darknessThreshold: CGFloat = 0.2
     let dismissThreshold: CGFloat = 44.0 * UIScreen.main.nativeScale
@@ -43,12 +52,8 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     // MARK: - Lifecycle
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let viewController = segue.destination as? PlayerControlsViewController {
+        if let viewController = segue.destination as? PlayerSliderControlsViewController {
             self.controlsViewController = viewController
-        }
-
-        if let viewController = segue.destination as? PlayerMetaViewController {
-            self.metaViewController = viewController
         }
     }
 
@@ -74,6 +79,23 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         self.closeButton.accessibilityLabel = "voiceover_dismiss_player_title".localized
         self.setupView(book: self.currentBook!)
 
+        self.pageControl.isAccessibilityElement = false
+        self.pageControl.hidesForSinglePage = true
+        self.playButton.imageView?.contentMode = .scaleAspectFill
+        self.playButton.imageView?.clipsToBounds = false
+        self.playButton.accessibilityTraits = UIAccessibilityTraits(rawValue: super.accessibilityTraits.rawValue | UIAccessibilityTraits.button.rawValue)
+
+        self.rewindControlView.onTap = {
+            PlayerManager.shared.rewind()
+        }
+
+        self.forwardControlView.onTap = {
+            PlayerManager.shared.forward()
+        }
+
+        //initial play button state
+        PlayerManager.shared.isPlaying ? self.onBookPlay() : self.onBookPause()
+
         // Make toolbar transparent
         self.bottomToolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
         self.bottomToolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
@@ -88,6 +110,9 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
             self.updateToolbar(true, animated: true)
         }
 
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onBookPlay), name: .bookPlayed, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onBookPause), name: .bookPaused, object: nil)
+
         // Gestures
         self.pan = UIPanGestureRecognizer(target: self, action: #selector(self.panAction))
         self.pan.delegate = self
@@ -97,12 +122,6 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         self.view.addGestureRecognizer(self.pan)
 
         accessibilityCustomRotors = [self.controlsViewController!.customChapterRotor]
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        self.controlsViewController?.showPlayPauseButton(animated)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -129,8 +148,9 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     }
 
     func setupView(book currentBook: Book) {
-        self.metaViewController?.book = currentBook
         self.controlsViewController?.book = currentBook
+
+        self.artworkControl.artwork = currentBook.artwork
 
         self.speedButton.title = self.formatSpeed(PlayerManager.shared.speed)
         self.speedButton.accessibilityLabel = String(describing: self.formatSpeed(PlayerManager.shared.speed) + " \("speed_title".localized)")
@@ -149,6 +169,8 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         var items = [UIBarButtonItem]()
 
         self.chaptersButton.isEnabled = self.currentBook.hasChapters
+        self.pageControl.numberOfPages = self.currentBook.hasChapters ? 2 : 1
+        
         items.append(self.chaptersButton)
         items.append(spacer)
         items.append(self.speedButton)
@@ -190,6 +212,8 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
             return
         }
 
+        self.onBookPause()
+
         // request for review
         if #available(iOS 10.3, *), UIApplication.shared.applicationState == .active {
             #if RELEASE
@@ -198,6 +222,16 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
 
             UserDefaults.standard.set(false, forKey: "ask_review")
         }
+    }
+
+    @objc private func onBookPlay() {
+        self.playButton.setImage(self.pauseImage, for: UIControl.State())
+        self.playButton.accessibilityLabel = "Pause"
+    }
+
+    @objc private func onBookPause() {
+        self.playButton.setImage(self.playImage, for: UIControl.State())
+        self.playButton.accessibilityLabel = "Play"
     }
 
     // MARK: - Gesture recognizers
@@ -293,6 +327,11 @@ extension PlayerViewController {
         self.dismiss(animated: true, completion: nil)
     }
 
+    @IBAction func playPause() {
+        PlayerManager.shared.playPause()
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+    }
+
     // MARK: - Toolbar actions
 
     @IBAction func setSpeed() {
@@ -364,6 +403,9 @@ extension PlayerViewController: Themeable {
         self.bottomToolbar.tintColor = theme.highlightColor
         self.closeButton.tintColor = theme.highlightColor
 
+        self.rewindControlView.tintColor = theme.primaryColor
+        self.forwardControlView.tintColor = theme.primaryColor
+        self.playButton.tintColor = theme.primaryColor
         self.blurEffectView?.removeFromSuperview()
 
         let blur = UIBlurEffect(style: theme.useDarkVariant ? UIBlurEffect.Style.dark : UIBlurEffect.Style.light)
