@@ -1,12 +1,12 @@
 github "Alamofire/Alamofire" ~> 4.9.1
-github "cbpowell/MarqueeLabel" ~> 3.1.6
+github "cbpowell/MarqueeLabel" ~> 4.0.0
 github "pixelogik/ColorCube" "master"
-github "dennisweissmann/DeviceKit" ~> 1.7
+github "dennisweissmann/DeviceKit" ~> 2.3.0
 github "GianniCarlo/SwiftReorder"
-github "iosdevzone/IDZSwiftCommonCrypto"
-github "GianniCarlo/DirectoryWatcher"
-github "ZipArchive/ZipArchive"
+github "iosdevzone/IDZSwiftCommonCrypto" ~> 0.13.0
+github "GianniCarlo/DirectoryWatcher" ~> 2.5.0
+github "weichsel/ZIPFoundation" ~> 0.9.9
 github "GianniCarlo/Themeable" "master"
-github "getsentry/sentry-cocoa" "4.1.0"
-github "onevcat/Kingfisher" ~> 5.0
-github "bizz84/SwiftyStoreKit" "0.14.2"
+github "getsentry/sentry-cocoa" ~> 4.1.0
+github "onevcat/Kingfisher" ~> 5.13.3
+github "bizz84/SwiftyStoreKit" ~> 0.14.2

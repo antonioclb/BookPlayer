@@ -235,15 +235,13 @@ class SettingsViewController: UITableViewController, MFMailComposeViewController
     }
 
     @IBAction func sendSupportEmail() {
-        let device = Device()
-
         if MFMailComposeViewController.canSendMail() {
             let mail = MFMailComposeViewController()
 
             mail.mailComposeDelegate = self
             mail.setToRecipients([self.supportEmail])
             mail.setSubject("I need help with BookPlayer \(self.version)-\(self.build)")
-            mail.setMessageBody("<p>Hello BookPlayer Crew,<br>I have an issue concerning BookPlayer \(self.appVersion) on my \(device) running \(self.systemVersion)</p><p>When I try to…</p>", isHTML: true)
+            mail.setMessageBody("<p>Hello BookPlayer Crew,<br>I have an issue concerning BookPlayer \(self.appVersion) on my \(Device.current) running \(self.systemVersion)</p><p>When I try to…</p>", isHTML: true)
 
             self.present(mail, animated: true)
         } else {
