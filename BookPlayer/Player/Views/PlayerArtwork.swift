@@ -7,19 +7,17 @@
 //
 
 import UIKit
+import BookPlayerKit
 
 class PlayerArtwork: UIView, UIGestureRecognizerDelegate {
     @IBOutlet var contentView: UIView!
-
     @IBOutlet private weak var artworkImage: BPArtworkView!
-
-    var artwork: UIImage? {
-        get {
-            return self.artworkImage.image
-        }
-
-        set {
-            self.artworkImage.image = newValue
+    
+    var cornerRadius: CGFloat = 8.0
+    
+    var book: LibraryItem? {
+        didSet {
+            self.artworkImage.image = self.book?.artwork
         }
     }
 
@@ -51,11 +49,27 @@ class PlayerArtwork: UIView, UIGestureRecognizerDelegate {
 
         self.contentView.frame = self.bounds
         self.contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        self.artworkImage.clipsToBounds = true
+        self.artworkImage.contentMode = .scaleAspectFit
+        self.artworkImage.layer.cornerRadius = self.cornerRadius
 
         // View & Subviews
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOffset = CGSize(width: 0.0, height: 4.0)
-        self.layer.shadowOpacity = 0.15
-        self.layer.shadowRadius = 12.0
+        
+        let shadowSpread: CGFloat = 15.0
+        
+        // TODO: Get the correct bounds after .scaleAspectFit
+        let spreadRect = self.artworkImage.bounds.inset(by: UIEdgeInsets(top: CGFloat(shadowSpread), left: shadowSpread, bottom: shadowSpread, right: shadowSpread))
+    
+        self.layer.cornerRadius = self.cornerRadius
+        self.layer.masksToBounds = false
+
+        self.layer.shadowPath = CGPath(roundedRect: spreadRect, cornerWidth: self.cornerRadius, cornerHeight: self.cornerRadius, transform: .none)
+        self.layer.shadowRadius = 23.5
+        self.layer.shadowOffset = CGSize(width: shadowSpread, height: shadowSpread + 5.0 / 8.0 * self.cornerRadius)
+        self.layer.shadowOpacity = 1.0
+        
+        // TODO: Not sure why this doesn't work
+        self.layer.shadowColor = self.book?.shadowColor.cgColor
     }
 }

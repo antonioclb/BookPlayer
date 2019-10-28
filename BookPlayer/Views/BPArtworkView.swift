@@ -34,6 +34,7 @@ class BPArtworkView: UIImageView {
         self.layer.masksToBounds = true
         self.clipsToBounds = true
 
+        // TODO: Make sure this actually renders a border around the *image*, not the whole view.
         self.layer.borderWidth = 0.5
         self.layer.borderColor = UIColor.textColor.withAlphaComponent(0.2).cgColor
     }

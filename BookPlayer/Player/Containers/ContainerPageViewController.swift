@@ -8,6 +8,7 @@
 
 import BookPlayerKit
 import UIKit
+import Themeable
 
 class ContainerPageViewController: UIPageViewController, UIPageViewControllerDataSource {
     var currentBook: Book!
@@ -48,6 +49,8 @@ class ContainerPageViewController: UIPageViewController, UIPageViewControllerDat
         self.playerViewController = playerVC
         self.chapterNavViewController = chapterNavVC
         self.chaptersViewController = chapterVC
+        
+        self.view.backgroundColor = .white // TODO: Use theme background color
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.bookChange(_:)), name: .bookChange, object: nil)
 
@@ -96,3 +99,9 @@ class ContainerPageViewController: UIPageViewController, UIPageViewControllerDat
 }
 
 extension ContainerPageViewController: UIPageViewControllerDelegate {}
+
+extension ContainerPageViewController: Themeable {
+    func applyTheme(_ theme: Theme) {
+        self.view.backgroundColor = theme.backgroundColor
+    }
+}

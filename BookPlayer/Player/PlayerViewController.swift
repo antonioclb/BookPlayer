@@ -17,7 +17,7 @@ import UIKit
 // swiftlint:disable file_length
 
 class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
-    @IBOutlet private weak var artworkControl: ArtworkControl!
+    @IBOutlet private weak var artworkControl: PlayerArtwork!
     @IBOutlet weak var rewindControlView: PlayerJumpIconRewind!
     @IBOutlet weak var forwardControlView: PlayerJumpIconForward!
     @IBOutlet weak var playButton: UIButton!
@@ -149,8 +149,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
 
     func setupView(book currentBook: Book) {
         self.controlsViewController?.book = currentBook
-
-        self.artworkControl.artwork = currentBook.artwork
+        self.artworkControl.book = currentBook
 
         self.speedButton.title = self.formatSpeed(PlayerManager.shared.speed)
         self.speedButton.accessibilityLabel = String(describing: self.formatSpeed(PlayerManager.shared.speed) + " \("speed_title".localized)")
@@ -403,9 +402,9 @@ extension PlayerViewController: Themeable {
         self.bottomToolbar.tintColor = theme.highlightColor
         self.closeButton.tintColor = theme.highlightColor
 
-        self.rewindControlView.tintColor = theme.primaryColor
-        self.forwardControlView.tintColor = theme.primaryColor
-        self.playButton.tintColor = theme.primaryColor
+        self.rewindControlView.tintColor = theme.highlightColor
+        self.forwardControlView.tintColor = theme.highlightColor
+        self.playButton.tintColor = theme.highlightColor
         self.blurEffectView?.removeFromSuperview()
 
         let blur = UIBlurEffect(style: theme.useDarkVariant ? UIBlurEffect.Style.dark : UIBlurEffect.Style.light)
