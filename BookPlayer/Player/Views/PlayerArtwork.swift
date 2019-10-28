@@ -8,13 +8,10 @@
 
 import UIKit
 
-class ArtworkControl: UIView, UIGestureRecognizerDelegate {
+class PlayerArtwork: UIView, UIGestureRecognizerDelegate {
     @IBOutlet var contentView: UIView!
 
     @IBOutlet private weak var artworkImage: BPArtworkView!
-    @IBOutlet weak var artworkOverlay: UIView!
-    @IBOutlet weak var artworkWidth: NSLayoutConstraint!
-    @IBOutlet weak var artworkHeight: NSLayoutConstraint!
 
     var artwork: UIImage? {
         get {
@@ -42,7 +39,6 @@ class ArtworkControl: UIView, UIGestureRecognizerDelegate {
 
     override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
-        self.setupAccessibilityLabels()
     }
 
     private func setup() {
@@ -61,28 +57,5 @@ class ArtworkControl: UIView, UIGestureRecognizerDelegate {
         self.layer.shadowOffset = CGSize(width: 0.0, height: 4.0)
         self.layer.shadowOpacity = 0.15
         self.layer.shadowRadius = 12.0
-
-        self.artworkImage.clipsToBounds = false
-        self.artworkImage.contentMode = .scaleAspectFit
-        self.artworkImage.layer.cornerRadius = 6.0
-        self.artworkImage.layer.masksToBounds = true
-        self.artworkImage.layer.borderColor = UIColor.clear.cgColor
-
-        self.artworkOverlay.clipsToBounds = false
-        self.artworkOverlay.contentMode = .scaleAspectFit
-        self.artworkOverlay.layer.cornerRadius = 6.0
-        self.artworkOverlay.layer.masksToBounds = true
-    }
-
-    // Voiceover
-    private func setupAccessibilityLabels() {
-//        isAccessibilityElement = false
-//        self.rewindIcon.accessibilityLabel = VoiceOverService.rewindText()
-//        self.forwardIcon.accessibilityLabel = VoiceOverService.fastForwardText()
-//        accessibilityElements = [
-//            playPauseButton as Any,
-//            rewindIcon as Any,
-//            forwardIcon as Any
-//        ]
     }
 }
