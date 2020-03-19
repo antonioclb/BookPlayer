@@ -99,6 +99,8 @@
 		419B375623B8D5A500128A8F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 419B375423B8D5A500128A8F /* Localizable.strings */; };
 		419B375E23B8D6DB00128A8F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 419B375B23B8D6DB00128A8F /* Localizable.strings */; };
 		419BD5992443FD04001E50A0 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 41640A3624416EE8004FB97B /* Intents.intentdefinition */; };
+		419B372C23B6DA7900128A8F /* URL+BookPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419B372A23B6DA6B00128A8F /* URL+BookPlayer.swift */; };
+		419B372D23B6DA7900128A8F /* URL+BookPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419B372A23B6DA6B00128A8F /* URL+BookPlayer.swift */; };
 		419F38EE2288B7DE00989E61 /* NowPlayingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419F38ED2288B7DE00989E61 /* NowPlayingController.swift */; };
 		41A1B0E4226E9BC500EA0400 /* BookPlayerKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 41A1B0D4226E9BC400EA0400 /* BookPlayerKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41A1B0E7226E9BC500EA0400 /* BookPlayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41A1B0D2226E9BC400EA0400 /* BookPlayerKit.framework */; };
@@ -477,6 +479,7 @@
 		419B377523B92CC100128A8F /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		419B379523B92E1600128A8F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		419B379623B92E1600128A8F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		419B372A23B6DA6B00128A8F /* URL+BookPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+BookPlayer.swift"; sourceTree = "<group>"; };
 		419F38ED2288B7DE00989E61 /* NowPlayingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingController.swift; sourceTree = "<group>"; };
 		41A1B0D2226E9BC400EA0400 /* BookPlayerKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BookPlayerKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		41A1B0D4226E9BC400EA0400 /* BookPlayerKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BookPlayerKit.h; sourceTree = "<group>"; };
@@ -877,6 +880,7 @@
 			children = (
 				4160A08E23F2DBD40039166B /* String+BookPlayer.swift */,
 				C30B085E209654E3003F325B /* UIColor+BookPlayer.swift */,
+				419B372A23B6DA6B00128A8F /* URL+BookPlayer.swift */,
 				C30CD2A0209791FA00258B09 /* UIColor+Sweetercolor.swift */,
 				41CE44A8227215B500C900AF /* Notification+BookPlayerKit.swift */,
 			);
@@ -1725,6 +1729,7 @@
 				4140EA78227289BC0009F794 /* PlaybackRecord+CoreDataClass.swift in Sources */,
 				4140EA79227289BF0009F794 /* PlaybackRecord+CoreDataProperties.swift in Sources */,
 				4140EA7D227289CB0009F794 /* LibraryItem+CoreDataProperties.swift in Sources */,
+				419B372D23B6DA7900128A8F /* URL+BookPlayer.swift in Sources */,
 				4140EA73227289A80009F794 /* Notification+BookPlayerKit.swift in Sources */,
 				4140EA702272899D0009F794 /* CommandParser.swift in Sources */,
 				4140EA76227289B50009F794 /* Chapter+CoreDataClass.swift in Sources */,
@@ -1867,6 +1872,7 @@
 				41A1B121226F88C500EA0400 /* PlaybackRecord+CoreDataClass.swift in Sources */,
 				41A1B104226E9DBA00EA0400 /* UIColor+BookPlayer.swift in Sources */,
 				41A1B11D226F88C500EA0400 /* Theme+CoreDataClass.swift in Sources */,
+				419B372C23B6DA7900128A8F /* URL+BookPlayer.swift in Sources */,
 				41A1B129226F88C500EA0400 /* Playlist+CoreDataClass.swift in Sources */,
 				410C4692227358CD0040114D /* WatchConnectivityService.swift in Sources */,
 				41A1B12A226F88C500EA0400 /* Playlist+CoreDataProperties.swift in Sources */,
