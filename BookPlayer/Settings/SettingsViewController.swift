@@ -241,11 +241,11 @@ class SettingsViewController: UITableViewController, MFMailComposeViewController
             mail.mailComposeDelegate = self
             mail.setToRecipients([self.supportEmail])
             mail.setSubject("I need help with BookPlayer \(self.version)-\(self.build)")
-            mail.setMessageBody("<p>Hello BookPlayer Crew,<br>I have an issue concerning BookPlayer \(self.appVersion) on my \(Device.current) running \(self.systemVersion)</p><p>When I try to…</p>", isHTML: true)
+//            mail.setMessageBody("<p>Hello BookPlayer Crew,<br>I have an issue concerning BookPlayer \(self.appVersion) on my \(Device.current) running \(self.systemVersion)</p><p>When I try to…</p>", isHTML: true)
 
             self.present(mail, animated: true)
         } else {
-            let debugInfo = "BookPlayer \(self.appVersion)\n\(device) - \(self.systemVersion)"
+            let debugInfo = "BookPlayer "
             let message = "settings_support_compose_description".localized
 
             let alert = UIAlertController(title: "settings_support_compose_title".localized, message: "\(message) \(self.supportEmail)\n\n\(debugInfo)", preferredStyle: .alert)

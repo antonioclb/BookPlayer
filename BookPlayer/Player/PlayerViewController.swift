@@ -93,7 +93,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
             PlayerManager.shared.forward()
         }
 
-        //initial play button state
+        // initial play button state
         PlayerManager.shared.isPlaying ? self.onBookPlay() : self.onBookPause()
 
         // Make toolbar transparent
@@ -105,7 +105,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         // Observers
         NotificationCenter.default.addObserver(self, selector: #selector(self.requestReview), name: .requestReview, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.requestReview), name: .bookEnd, object: nil)
-        
+
         if SleepTimer.shared.isActive() {
             self.updateToolbar(true, animated: true)
         }
@@ -169,7 +169,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
 
         self.chaptersButton.isEnabled = self.currentBook.hasChapters
         self.pageControl.numberOfPages = self.currentBook.hasChapters ? 2 : 1
-        
+
         items.append(self.chaptersButton)
         items.append(spacer)
         items.append(self.speedButton)

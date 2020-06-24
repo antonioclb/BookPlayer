@@ -14,7 +14,7 @@ class BPMarqueeLabel: MarqueeLabel {
         super.init(coder: aDecoder)
 
         self.animationDelay = 2.0
-        self.speed = .rate(7.5)
+//        self.speed = .rate(7.5)
         self.fadeLength = 10.0
         self.leadingBuffer = 10.0
         self.trailingBuffer = 10.0
