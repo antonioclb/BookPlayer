@@ -54,11 +54,13 @@ class LibraryViewController: ItemListViewController, UIGestureRecognizerDelegate
     func loadLibrary() {
         self.library = DataManager.getLibrary()
 
+        _ = DataManager.verifyHierarchy(self.library)
+
         self.toggleEmptyStateView()
 
         self.tableView.reloadData()
 
-        DataManager.notifyPendingFiles()
+//        DataManager.notifyPendingFiles()
     }
 
     func downloadBook(from urlString: String) {
@@ -230,18 +232,22 @@ class LibraryViewController: ItemListViewController, UIGestureRecognizerDelegate
     }
 
     @objc func onNewFileUrl() {
-        guard self.loadingView.isHidden else { return }
-        let loadingTitle = "import_preparing_title".localized
-        UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: self.loadingView.titleLabel)
+        DispatchQueue.main.async {
+//            guard self.loadingView.isHidden else { return }
+//            let loadingTitle = "import_preparing_title".localized
+//            UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: self.loadingView.titleLabel)
+//
+//            if let vc = self.navigationController?.visibleViewController as? PlayerViewController {
+//                vc.dismissPlayer()
+//            }
+//
+//            self.showLoadView(true, title: loadingTitle)
+//
+//            if let vc = self.navigationController?.visibleViewController as? PlaylistViewController {
+//                vc.showLoadView(true, title: loadingTitle)
+//            }
 
-        if let vc = self.navigationController?.visibleViewController as? PlayerViewController {
-            vc.dismissPlayer()
-        }
-
-        self.showLoadView(true, title: loadingTitle)
-
-        if let vc = self.navigationController?.visibleViewController as? PlaylistViewController {
-            vc.showLoadView(true, title: loadingTitle)
+            self.loadLibrary()
         }
     }
 

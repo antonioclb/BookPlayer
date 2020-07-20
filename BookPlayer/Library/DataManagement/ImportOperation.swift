@@ -62,24 +62,10 @@ public class ImportOperation: Operation {
     }
 
     func handleDirectory(file: FileItem) {
-        let resourceKeys: [URLResourceKey] = [.creationDateKey, .isDirectoryKey]
-        let enumerator = FileManager.default.enumerator(at: file.originalUrl,
-                                                        includingPropertiesForKeys: resourceKeys,
-                                                        options: [.skipsHiddenFiles], errorHandler: { (url, error) -> Bool in
-                                                            print("directoryEnumerator error at \(url): ", error)
-                                                            return true
-        })!
-
         let documentsURL = DataManager.getDocumentsFolderURL()
+        let destinationURL = documentsURL.appendingPathComponent(file.originalUrl.lastPathComponent)
 
-        for case let fileURL as URL in enumerator {
-            guard fileURL.pathExtension == "mp3" || fileURL.pathExtension == "m4a" || fileURL.pathExtension == "m4b" else { continue }
-
-            let destinationURL = documentsURL.appendingPathComponent(fileURL.lastPathComponent)
-            try? FileManager.default.moveItem(at: fileURL, to: destinationURL)
-        }
-
-        // Delete directory
+        try? FileManager.default.moveItem(at: file.originalUrl, to: destinationURL)
         try? FileManager.default.removeItem(at: file.originalUrl)
     }
 
@@ -88,7 +74,7 @@ public class ImportOperation: Operation {
             NotificationCenter.default.post(name: .processingFile, object: nil, userInfo: ["filename": file.originalUrl.lastPathComponent])
 
             guard file.originalUrl.pathExtension != "zip" else {
-                handleZip(file: file)
+                self.handleZip(file: file)
                 continue
             }
 
@@ -97,7 +83,7 @@ public class ImportOperation: Operation {
             }
 
             if let type = attributes[.type] as? FileAttributeType, type == .typeDirectory {
-                handleDirectory(file: file)
+                self.handleDirectory(file: file)
                 continue
             }
 
@@ -123,18 +109,25 @@ public class ImportOperation: Operation {
 
                 let hash = hexString(fromArray: finalDigest)
                 let ext = file.originalUrl.pathExtension
-                let filename = hash + ".\(ext)"
+                let filename = file.originalUrl.deletingPathExtension().lastPathComponent + hash + ".\(ext)" // hash + ".\(ext)"
+                print(filename)
                 let destinationURL = file.destinationFolder.appendingPathComponent(filename)
+                print(destinationURL)
 
                 do {
                     if !FileManager.default.fileExists(atPath: destinationURL.path) {
                         try FileManager.default.moveItem(at: file.originalUrl, to: destinationURL)
                         try (destinationURL as NSURL).setResourceValue(URLFileProtection.none, forKey: .fileProtectionKey)
+                        if let derp = hash.data(using: .utf8) {
+                            print("setting extended attribute")
+                            try destinationURL.setExtendedAttribute(data: derp, forName: "com.tortugapower.audiobookplayer.process.status")
+                            print("set successful")
+                        }
                     } else {
                         try FileManager.default.removeItem(at: file.originalUrl)
                     }
                 } catch {
-                    fatalError("Fail to move file from \(file.originalUrl) to \(destinationURL)")
+                    fatalError("Error: \(error). Fail to move file from \(file.originalUrl) to \(destinationURL)")
                 }
 
                 file.processedUrl = destinationURL

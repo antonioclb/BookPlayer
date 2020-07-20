@@ -22,7 +22,7 @@ import WatchConnectivity
 class AppDelegate: UIResponder, UIApplicationDelegate, TelemetryProtocol {
     var window: UIWindow?
     var wasPlayingBeforeInterruption: Bool = false
-    var watcher: DirectoryWatcher?
+    var watcher: DirectoryDeepWatcher?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -281,12 +281,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, TelemetryProtocol {
 
     func setupDocumentListener() {
         let documentsUrl = DataManager.getDocumentsFolderURL()
-        self.watcher = DirectoryWatcher.watch(documentsUrl)
+        self.watcher = DirectoryDeepWatcher.watch(documentsUrl)
 
-        self.watcher?.onNewFiles = { newFiles in
-            for url in newFiles {
-                DataManager.processFile(at: url)
-            }
+        self.watcher?.onFolderNotification = { folder in
+            let path = folder.path
+
+            guard !path.contains("Documents/Inbox"), !path.contains("Documents/Processed") else { return }
+
+            print("====== notification \(folder)")
+            NotificationCenter.default.post(name: .newFileUrl, object: nil, userInfo: nil)
+//            for url in newFiles {
+//                DataManager.processFile(at: url)
+//            }
         }
     }
 

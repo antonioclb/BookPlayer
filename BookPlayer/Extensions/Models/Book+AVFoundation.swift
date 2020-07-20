@@ -10,6 +10,7 @@ import AVFoundation
 import BookPlayerKit
 import CoreData
 import Foundation
+import IDZSwiftCommonCrypto
 
 extension Book {
     func setChapters(from asset: AVAsset, context: NSManagedObjectContext) {
@@ -40,6 +41,7 @@ extension Book {
         let fileURL = bookUrl.processedUrl!
         self.ext = fileURL.pathExtension
         self.identifier = fileURL.lastPathComponent
+        self.path = ""
         let asset = AVAsset(url: fileURL)
 
         let titleFromMeta = AVMetadataItem.metadataItems(from: asset.metadata, withKey: AVMetadataKey.commonKeyTitle, keySpace: AVMetadataKeySpace.common).first?.value?.copy(with: nil) as? String
@@ -73,6 +75,35 @@ extension Book {
         if storedTime > 0 {
             self.currentTime = storedTime
             UserDefaults.standard.removeObject(forKey: legacyIdentifier)
+        }
+
+        guard FileManager.default.fileExists(atPath: fileURL.path),
+            let inputStream = InputStream(url: fileURL) else {
+            return
+        }
+
+        inputStream.open()
+
+        autoreleasepool {
+            let digest = Digest(algorithm: .md5)
+
+            var count = 0
+
+            while inputStream.hasBytesAvailable {
+                if count == 5 { break }
+                var inputBuffer = [UInt8](repeating: 0, count: 1024)
+                inputStream.read(&inputBuffer, maxLength: inputBuffer.count)
+                _ = digest.update(byteArray: inputBuffer)
+                count += 1
+            }
+
+            inputStream.close()
+
+            let finalDigest = digest.final()
+
+            let hash = hexString(fromArray: finalDigest)
+
+            self.identifier = hash + "." + self.ext
         }
     }
 }

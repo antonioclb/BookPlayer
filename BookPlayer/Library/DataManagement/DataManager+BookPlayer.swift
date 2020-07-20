@@ -12,6 +12,7 @@ import CoreData
 import Foundation
 import IDZSwiftCommonCrypto
 import UIKit
+import ZipArchive
 
 extension DataManager {
     static let importer = ImportManager()
@@ -109,7 +110,7 @@ extension DataManager {
      - Parameter origin: File original location
      */
     public class func processFile(at origin: URL) {
-        self.processFile(at: origin, destinationFolder: self.getProcessedFolderURL())
+        self.processFile(at: origin, destinationFolder: self.getDocumentsFolderURL())
     }
 
     /**
@@ -124,18 +125,139 @@ extension DataManager {
     /**
      Find all the files in the documents folder and send notifications about their existence.
      */
-    public class func notifyPendingFiles() {
+    public class func verifyHierarchy(_ library: Library) -> Bool {
         let documentsFolder = self.getDocumentsFolderURL()
 
-        // Get reference of all the files located inside the folder
-        guard let urls = self.getFiles(from: documentsFolder) else {
-            return
+        guard let enumerator = FileManager.default.enumerator(at: documentsFolder,
+                                                              includingPropertiesForKeys: [.creationDateKey, .isDirectoryKey],
+                                                              options: [.skipsHiddenFiles], errorHandler: { (url, error) -> Bool in
+                                                                  print("directoryEnumerator error at \(url): ", error)
+                                                                  return true
+		}) else {
+            return false
         }
 
-        let processedFolder = self.getProcessedFolderURL()
+        return self.processFiles(with: enumerator, and: library)
+    }
 
-        for url in urls {
-            self.processFile(at: url, destinationFolder: processedFolder)
+    private class func processFiles(with enumerator: FileManager.DirectoryEnumerator, and library: Library) -> Bool {
+        self.saveContext()
+
+        guard let url = enumerator.nextObject() as? URL else { return true }
+
+        // skip inbox and deprecated processed folder
+        if url.lastPathComponent == DataManager.inboxFolderName
+            || url.lastPathComponent == DataManager.processedFolderName {
+            enumerator.skipDescendants()
+            return self.processFiles(with: enumerator, and: library)
+        }
+
+        // skip zips
+        if url.pathExtension == "zip" {
+            return self.processFiles(with: enumerator, and: library)
+        }
+
+        let parentPlaylist = self.getParentPlaylist(at: url, with: enumerator)
+        let path = url.relativePath(to: self.getDocumentsFolderURL())
+        print("==== relative path: \(path)")
+
+        // handle already imported files
+        if let identifier = url.getAppIdentifier() {
+            if url.hasDirectoryPath {
+                // verify if book exists in core data, otherwise create it, and add it to parent item (library or playlist)
+                let storedPlaylist = Playlist.find(with: identifier, context: self.persistentContainer.viewContext)
+
+                if let storedPlaylist = storedPlaylist {
+                    self.insert(storedPlaylist, at: parentPlaylist, or: library)
+
+                    return self.processFiles(with: enumerator, and: library)
+                } else {
+                    print("=== creating playlist that should already exist")
+                    let playlist = self.createPlaylist(from: url, books: [])
+
+                    self.insert(playlist, at: parentPlaylist, or: library)
+                }
+
+                return self.processFiles(with: enumerator, and: library)
+            } else {
+                // verify if book exists in core data, otherwise create it, and add it to parent item (library or playlist)
+                let storedBook = Book.find(with: identifier, context: self.persistentContainer.viewContext)
+
+                if let storedBook = storedBook {
+                    self.insert(storedBook, at: parentPlaylist, or: library)
+
+                    return self.processFiles(with: enumerator, and: library)
+                } else {
+                    print("=== creating book that should already exist")
+                    self.insertBook(from: url, at: parentPlaylist, or: library)
+                }
+
+                return self.processFiles(with: enumerator, and: library)
+            }
+        }
+
+        // handle new files
+        if url.hasDirectoryPath {
+            print("=== handling folder, creating playlist: \(url.lastPathComponent)")
+            let playlist = self.createPlaylist(from: url, books: [])
+            playlist.path = path
+
+            self.insert(playlist, at: parentPlaylist, or: library)
+
+            return self.processFiles(with: enumerator, and: library)
+        }
+
+        print("=== creating book from scratch")
+        // process book and add it to parent playlist if exists
+        self.insertBook(from: url, at: parentPlaylist, or: library)
+
+        return self.processFiles(with: enumerator, and: library)
+    }
+
+    private class func getParentPlaylist(at url: URL, with enumerator: FileManager.DirectoryEnumerator) -> Playlist? {
+        guard enumerator.level > 0 else { return nil }
+
+        let parent = url.deletingLastPathComponent()
+
+        let parentPath = parent.relativePath(to: self.getDocumentsFolderURL())
+
+        let request: NSFetchRequest<Playlist> = Playlist.fetchRequest()
+
+        request.predicate = NSPredicate(format: "path = %@", parentPath)
+
+        return try? self.persistentContainer.viewContext.fetch(request).first
+    }
+
+    private class func getPlaylist(at path: String) -> Playlist? {
+        let request: NSFetchRequest<Playlist> = Playlist.fetchRequest()
+
+        request.predicate = NSPredicate(format: "path = %@", path)
+
+        return try? self.persistentContainer.viewContext.fetch(request).first
+    }
+
+    private class func insert(_ item: LibraryItem, at playlist: Playlist?, or library: Library) {
+        if let playlist = playlist {
+            playlist.addToItems(item)
+        } else {
+            library.addToItems(item)
+        }
+    }
+
+    private class func insertBook(from url: URL, at playlist: Playlist?, or library: Library) {
+        let fileItem = FileItem(originalUrl: url, processedUrl: url, destinationFolder: url)
+        let book = Book(from: fileItem, context: self.persistentContainer.viewContext)
+        let path = url.relativePath(to: self.getDocumentsFolderURL())
+        print("==== relative path: \(path)")
+        book.path = path
+
+        // swiftlint:disable force_try
+        try! url.setAppIdentifier(book.identifier)
+
+        if let playlist = playlist {
+            playlist.addToItems(book)
+        } else {
+            library.addToItems(book)
         }
     }
 
