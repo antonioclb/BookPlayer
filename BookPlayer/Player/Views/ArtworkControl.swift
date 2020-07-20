@@ -18,7 +18,7 @@ class ArtworkControl: UIView, UIGestureRecognizerDelegate {
     @IBOutlet private weak var artworkImage: BPArtworkView!
     @IBOutlet weak var artworkOverlay: UIView!
     @IBOutlet weak var artworkWidth: NSLayoutConstraint!
-    @IBOutlet weak var artworkHeight: NSLayoutConstraint!
+    @IBOutlet weak var artworkHeight: NSLayoutConstraint! 
 
     private let playImage = UIImage(named: "playerIconPlay")
     private let pauseImage = UIImage(named: "playerIconPause")
