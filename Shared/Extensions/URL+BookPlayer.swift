@@ -9,12 +9,38 @@
 import Foundation
 
 extension URL {
+    public func relativePath(to baseURL: URL) -> String {
+        return self.path.components(separatedBy: baseURL.path).last ?? ""
+    }
+
     public func hasAppKey() -> Bool {
         do {
-            _ = try self.extendedAttribute(forName: "com.bookplayer.app")
+            _ = try self.extendedAttribute(forName: "com.tortugapower.audiobookplayer.identifier")
             return true
         } catch {
             return false
+        }
+    }
+
+    public func getAppIdentifier() -> String? {
+        do {
+            let data = try self.extendedAttribute(forName: "com.tortugapower.audiobookplayer.identifier")
+            return String(bytes: data, encoding: .utf8)
+        } catch {
+            return nil
+        }
+    }
+
+    public func setAppIdentifier(_ identifier: String) throws {
+        guard let data = identifier.data(using: .utf8) else {
+            throw "derp"
+        }
+
+        try self.withUnsafeFileSystemRepresentation { fileSystemPath in
+            let result = data.withUnsafeBytes {
+                setxattr(fileSystemPath, "com.tortugapower.audiobookplayer.identifier", $0.baseAddress, data.count, 0, 0)
+            }
+            guard result >= 0 else { throw URL.posixError(errno) }
         }
     }
 
