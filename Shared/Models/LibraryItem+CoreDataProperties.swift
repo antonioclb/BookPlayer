@@ -26,4 +26,5 @@ extension LibraryItem {
     @NSManaged public var originalFileName: String?
     @NSManaged public var isFinished: Bool
     @NSManaged public var lastPlayDate: Date?
+    @NSManaged public var path: String!
 }

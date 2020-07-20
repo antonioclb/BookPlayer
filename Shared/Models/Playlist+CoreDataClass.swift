@@ -16,7 +16,7 @@ public class Playlist: LibraryItem {
     // MARK: - Properties
 
     public override var artwork: UIImage {
-        guard let books = self.books?.array as? [Book], let book = books.first(where: { (book) -> Bool in
+        guard let books = self.items?.array as? [Book], let book = books.first(where: { (book) -> Bool in
             !book.usesDefaultArtwork
         }) else {
             return #imageLiteral(resourceName: "defaultPlaylist")
@@ -26,7 +26,7 @@ public class Playlist: LibraryItem {
     }
 
     public override func jumpToStart() {
-        guard let books = self.books?.array as? [Book] else { return }
+        guard let books = self.items?.array as? [Book] else { return }
 
         for book in books {
             book.currentTime = 0
@@ -34,7 +34,7 @@ public class Playlist: LibraryItem {
     }
 
     public override func markAsFinished(_ flag: Bool) {
-        guard let books = self.books?.array as? [Book] else { return }
+        guard let books = self.items?.array as? [Book] else { return }
 
         for book in books {
             book.isFinished = flag
@@ -53,13 +53,30 @@ public class Playlist: LibraryItem {
         self.title = title
         self.originalFileName = title
         self.desc = "\(books.count) \("files_title".localized)"
+        self.path = ""
         self.addToBooks(NSOrderedSet(array: books))
+    }
+
+    convenience init(from url: URL, books: [Book], context: NSManagedObjectContext) {
+        let entity = NSEntityDescription.entity(forEntityName: "Playlist", in: context)!
+
+        let title = url.lastPathComponent
+        self.init(entity: entity, insertInto: context)
+
+        self.identifier = UUID().uuidString
+        self.title = title
+        self.originalFileName = title
+        self.desc = "\(books.count) \("files_title".localized)"
+        self.path = ""
+        self.addToBooks(NSOrderedSet(array: books))
+        // swiftlint:disable force_try
+        try! url.setAppIdentifier(self.identifier)
     }
 
     // MARK: - Methods
 
     func totalDuration() -> Double {
-        guard let books = self.books?.array as? [Book] else {
+        guard let books = self.items?.array as? [Book] else {
             return 0.0
         }
 
@@ -77,7 +94,7 @@ public class Playlist: LibraryItem {
     }
 
     public override var progress: Double {
-        guard let books = self.books?.array as? [Book] else {
+        guard let books = self.items?.array as? [Book] else {
             return 0.0
         }
 
@@ -99,13 +116,13 @@ public class Playlist: LibraryItem {
     }
 
     public func updateCompletionState() {
-        guard let books = self.books?.array as? [Book] else { return }
+        guard let books = self.items?.array as? [Book] else { return }
 
         self.isFinished = !books.contains(where: { !$0.isFinished })
     }
 
     public func hasBooks() -> Bool {
-        guard let books = self.books else {
+        guard let books = self.items else {
             return false
         }
 
@@ -119,7 +136,7 @@ public class Playlist: LibraryItem {
     }
 
     public func itemIndex(with identifier: String) -> Int? {
-        guard let books = self.books?.array as? [Book] else {
+        guard let books = self.items?.array as? [Book] else {
             return nil
         }
 
@@ -129,7 +146,7 @@ public class Playlist: LibraryItem {
     }
 
     public func getBook(at index: Int) -> Book? {
-        guard let books = self.books?.array as? [Book] else {
+        guard let books = self.items?.array as? [Book] else {
             return nil
         }
 
@@ -153,7 +170,7 @@ public class Playlist: LibraryItem {
     }
 
     public override func getBookToPlay() -> Book? {
-        guard let books = self.books else { return nil }
+        guard let books = self.items else { return nil }
 
         for item in books {
             guard let book = item as? Book, !book.isFinished else { continue }
@@ -165,7 +182,7 @@ public class Playlist: LibraryItem {
     }
 
     func getNextBook(after book: Book) -> Book? {
-        guard let books = self.books?.array as? [Book] else {
+        guard let books = self.items?.array as? [Book] else {
             return nil
         }
 
@@ -187,7 +204,7 @@ public class Playlist: LibraryItem {
     }
 
     public override func info() -> String {
-        let count = self.books?.array.count ?? 0
+        let count = self.items?.array.count ?? 0
 
         return "\(count) \("files_title".localized)"
     }
@@ -201,7 +218,7 @@ public class Playlist: LibraryItem {
         try container.encode(title, forKey: .title)
         try container.encode(desc, forKey: .desc)
 
-        if let booksArray = self.books?.array as? [Book] {
+        if let booksArray = self.items?.array as? [Book] {
             try container.encode(booksArray, forKey: .books)
         }
     }
@@ -226,7 +243,7 @@ public class Playlist: LibraryItem {
 extension Playlist: Sortable {
     public func sort(by sortType: PlayListSortOrder) {
         guard let books = books else { return }
-        self.books = BookSortService.sort(books, by: sortType)
+        self.items = BookSortService.sort(books, by: sortType)
         DataManager.saveContext()
     }
 }

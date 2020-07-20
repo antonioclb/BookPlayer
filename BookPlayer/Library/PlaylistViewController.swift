@@ -13,7 +13,7 @@ class PlaylistViewController: ItemListViewController {
     var playlist: Playlist!
 
     override var items: [LibraryItem] {
-        return self.playlist.books?.array as? [LibraryItem] ?? []
+        return self.playlist.items?.array as? [LibraryItem] ?? []
     }
 
     override func viewDidLoad() {
@@ -231,8 +231,6 @@ extension PlaylistViewController {
             return cell
         }
 
-        bookCell.type = .file
-
         guard
             let currentBook = PlayerManager.shared.currentBook,
             let fileURL = currentBook.fileURL,
@@ -262,15 +260,34 @@ extension PlaylistViewController {
 
         guard indexPath.sectionValue == .data else {
             if indexPath.sectionValue == .add {
-                self.presentImportFilesAlert()
+                self.addAction()
             }
 
             return
         }
 
-        guard let book = self.items[indexPath.row] as? Book else { return }
+        if let playlist = self.items[indexPath.row] as? Playlist {
+            self.presentPlaylist(playlist)
 
-        self.setupPlayer(book: book)
+            return
+        }
+
+        if let book = self.items[indexPath.row] as? Book {
+            setupPlayer(book: book)
+        }
+    }
+
+    private func presentPlaylist(_ playlist: Playlist) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+
+        guard let playlistVC = storyboard.instantiateViewController(withIdentifier: "PlaylistViewController") as? PlaylistViewController else {
+            return
+        }
+
+        playlistVC.library = library
+        playlistVC.playlist = playlist
+
+        navigationController?.pushViewController(playlistVC, animated: true)
     }
 
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
