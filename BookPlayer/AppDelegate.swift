@@ -269,6 +269,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             PlayerManager.shared.rewind()
             return .success
         }
+
+        let derp: [NSNumber] = [0.5, 0.75, 0.9, 1, 1.1, 1.15, 1.25, 1.5, 1.75, 2, 2.5, 3] // [0.5, 1, 1.5, 1.75, 2]
+        MPRemoteCommandCenter.shared().changePlaybackRateCommand.supportedPlaybackRates = derp
+        MPRemoteCommandCenter.shared().changePlaybackRateCommand.isEnabled = true
+        MPRemoteCommandCenter.shared().changePlaybackRateCommand.addTarget { (commandEvent) -> MPRemoteCommandHandlerStatus in
+            guard let cmd = commandEvent as? MPChangePlaybackRateCommandEvent else {
+                return .success
+            }
+
+            print(cmd.playbackRate)
+            PlayerManager.shared.speed = cmd.playbackRate
+
+            return .success
+        }
     }
 
     func setupDocumentListener() {

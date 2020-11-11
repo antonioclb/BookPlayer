@@ -16,7 +16,7 @@ import MediaPlayer
 class PlayerManager: NSObject {
     static let shared = PlayerManager()
 
-    static let speedOptions: [Float] = [3, 2.5, 2, 1.75, 1.5, 1.25, 1.15, 1.1, 1, 0.9, 0.75, 0.5]
+    static let speedOptions: [Float] = [0.5, 0.75, 0.9, 1, 1.1, 1.15, 1.25, 1.5, 1.75, 2, 2.5, 3]
 
     private var audioPlayer = AVPlayer()
 
@@ -241,6 +241,11 @@ class PlayerManager: NSObject {
             // set global speed
             if UserDefaults.standard.bool(forKey: Constants.UserDefaults.globalSpeedEnabled.rawValue) {
                 UserDefaults.standard.set(newValue, forKey: "global_speed")
+            }
+
+            DispatchQueue.main.async {
+                self.nowPlayingInfo[MPNowPlayingInfoPropertyDefaultPlaybackRate] = newValue
+                MPNowPlayingInfoCenter.default().nowPlayingInfo = self.nowPlayingInfo
             }
 
             guard self.isPlaying else { return }
